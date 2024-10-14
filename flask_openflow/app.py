@@ -171,8 +171,8 @@ def gitpush():
     subprocess.run(["git", "init"], check=True)
     subprocess.run(["git", "add", "."], check=True)
     subprocess.run(["git", "commit", "-m", "initial commit"], check=True)
-    subprocess.run(["git", "remote", "remove", "origin"], check=True, stderr=subprocess.DEVNULL)
-    remote_url = f"https://{token}@github.com/ddeniro-hash/SDN-Midterm.git"
+    subprocess.run(["git", "remote", "remove", "origin"], check=True)
+    remote_url = f"https://{token}@github.com/{username}/SDN-Midterm.git"
     subprocess.run(["git", "remote", "add", "origin", remote_url], check=True)
     subprocess.run(["git", "push", "-u", "origin", "master"], check=True)
 
