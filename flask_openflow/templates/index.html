@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenFlow Message Count</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body>
+    <canvas id="openflowChart" width="400" height="200"></canvas>
+    <script>
+        const ctx = document.getElementById('openflowChart').getContext('2d');
+        const data = {
+            labels: [],
+            datasets: [{
+                label: 'OpenFlow OFPT_ECHO_REQUEST Messages ',
+                data: [],
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                fill: false
+            }]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+
+        const openflowChart = new Chart(ctx, config);
+
+        const socket = io();
+
+        socket.on('openflow_message_count', function(msg) {
+            const currentTime = new Date().toLocaleTimeString();
+            openflowChart.data.labels.push(currentTime);
+            openflowChart.data.datasets[0].data.push(msg.count);
+            openflowChart.update();
+        });
+    </script>
+</body>
+</html>

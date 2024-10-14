@@ -1,0 +1,17 @@
+{
+    "R1": {
+        "username": "midterm",
+        "password": "midterm",
+        "ip_address": "10.10.10.1"
+    },
+    "R2": {
+        "username": "midterm",
+        "password": "midterm",
+        "ip_address": "10.10.10.2"
+    },
+    "R3": {
+        "username": "midterm",
+        "password": "midterm",
+        "ip_address": "10.10.10.3"
+    }
+}
