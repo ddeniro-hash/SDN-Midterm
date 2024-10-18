@@ -26,25 +26,28 @@ print("R3 Details:")
 print(f"  Username: {r3_username}, Password: {r3_password}, IP: {r3_ip}")'''
 
 def getdhcpbinding():
-    R1 = { # Router 1 information used in the connecthandler part
-    'device_type': 'cisco_ios',
-    'host': r1_ip,
-    'username': r1_username,
-    'password': r1_password,
-    'secret': r1_password,
-    }
-    net_connect = ConnectHandler(**R1)
-    net_connect.enable()
-    config = "do show ip dhcp binding"
-    data = net_connect.send_config_set(config)
-    match = re.search(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})', data)
-    # Troubleshooting ****
-    # print(data)
-    '''if match:
-        print(f"IP Address R1: {match.group(1)}")
-    else:
-        print("No IP Address found.")'''
-    return(match.group(1))
+    try:
+        R1 = { # Router 1 information used in the connecthandler part
+        'device_type': 'cisco_ios',
+        'host': r1_ip,
+        'username': r1_username,
+        'password': r1_password,
+        'secret': r1_password,
+        }
+        net_connect = ConnectHandler(**R1)
+        net_connect.enable()
+        config = "do show ip dhcp binding"
+        data = net_connect.send_config_set(config)
+        match = re.search(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})', data)
+        # Troubleshooting ****
+        # print(data)
+        '''if match:
+            print(f"IP Address R1: {match.group(1)}")
+        else:
+            print("No IP Address found.")'''
+        return(match.group(1))
+    except:
+        print("Unable to connect to R1")
 
 def configure_mininet(controller_ip="10.20.30.2"):
     ip_mininet = getdhcpbinding()
@@ -161,20 +164,24 @@ def gitpush():
     destination = "/home/netman/Documents/gitpushmidterm"
     username = "ddeniro-hash"
     token = "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"
-
-    shutil.copytree(source1, os.path.join(destination, "flask_openflow"), dirs_exist_ok=True)
-    shutil.copytree(source2, os.path.join(destination, "midterm"), dirs_exist_ok=True)
-    print("Directories copied successfully.")
+    try:
+        shutil.copytree(source1, os.path.join(destination, "flask_openflow"), dirs_exist_ok=True)
+        shutil.copytree(source2, os.path.join(destination, "midterm"), dirs_exist_ok=True)
+        print("Directories copied successfully.")
+    except:
+        print("Unable to copy directories /home/netman/Documents/flask_openflow and /home/netman/Documents/midterm")
 
     os.chdir(destination)
-
-    subprocess.run(["git", "init"], check=True)
-    subprocess.run(["git", "add", "."], check=True)
-    subprocess.run(["git", "commit", "-m", "initial commit"], check=True)
-    subprocess.run(["git", "remote", "remove", "origin"], check=True)
-    remote_url = f"https://{token}@github.com/{username}/SDN-Midterm.git"
-    subprocess.run(["git", "remote", "add", "origin", remote_url], check=True)
-    subprocess.run(["git", "push", "-u", "origin", "master"], check=True)
+    try:
+        subprocess.run(["git", "init"], check=True)
+        subprocess.run(["git", "add", "."], check=True)
+        subprocess.run(["git", "commit", "-m", "initial commit"], check=True)
+        subprocess.run(["git", "remote", "remove", "origin"], check=True)
+        remote_url = f"https://{token}@github.com/{username}/SDN-Midterm.git"
+        subprocess.run(["git", "remote", "add", "origin", remote_url], check=True)
+        subprocess.run(["git", "push", "-u", "origin", "master"], check=True)
+    except Exception as e:
+        print(f"Unable to connect to github, check errror: {e}")
 
 app = Flask(__name__)
 socketio = SocketIO(app)
